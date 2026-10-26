@@ -16,6 +16,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Figtree:wght@500;600;700;800&display=swap">
 <style>
+html{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
 /* Layout: greeting bar, a navy "today" panel (progress ring around a fat flame, three stats),
    then compact 3D cards, each with a round +1 button and a 7-day strip. A welcome gate sits on top at first open. */
 :root{
@@ -44,9 +46,6 @@
   color-scheme:dark;
 }
 
-html{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-[hidden]{display:none!important}
-img{max-width:100%}
 *{box-sizing:border-box}
 body{
   margin:0; background:var(--bg); color:var(--fg);
@@ -310,6 +309,153 @@ input[type=text]:focus{outline:none;border-color:var(--c,var(--flame))}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
 }
+[hidden]{display:none!important}
+
+/* ===== Wick the owl ===== */
+.owl{display:block;width:100%;height:auto;overflow:visible;--px:0;--py:0}
+.owl *{transform-box:view-box}
+.o-all{transform-origin:120px 254px;animation:breathe 4.2s ease-in-out infinite}
+.o-hop{transform-origin:120px 254px}
+.o-head{transform-origin:120px 196px;animation:headTilt 9s ease-in-out infinite}
+.o-wl{transform-origin:62px 126px;animation:wingTwitch 11s ease-in-out infinite}
+.o-wr{transform-origin:178px 126px;animation:wingTwitch 11s 3.5s ease-in-out infinite}
+.o-tl{transform-origin:84px 74px;animation:tuft 7s 1s ease-in-out infinite}
+.o-tr{transform-origin:156px 74px;animation:tuft 7s 3.4s ease-in-out infinite}
+.pupil{transform:translate(calc(var(--px)*1px),calc(var(--py)*1px));transition:transform .16s ease-out}
+.lid{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);animation:blink 5.6s infinite}
+.eyes-happy{opacity:0;transition:opacity .12s}
+.eyes-open{transition:opacity .12s}
+.mouth{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0)}
+.cheek{opacity:.55;transition:opacity .3s}
+.brows{transition:transform .25s}
+.spk path,.zzz text{opacity:0}
+.acc-sway{animation:accSway 5s ease-in-out infinite}
+.pom{transform-box:fill-box;transform-origin:50% 100%;animation:pomBob 2.4s ease-in-out infinite}
+.scarf-tail{animation:scarfWave 3.2s ease-in-out infinite}
+.bloom{transform-box:fill-box;transform-origin:50% 50%;animation:bloomPulse 3.6s ease-in-out infinite}
+.glint{transform-box:fill-box;transform-origin:50% 50%;animation:glint 3.4s ease-in-out infinite}
+
+/* moods */
+.owl[data-mood=sleepy] .lid{animation:drowse 6s ease-in-out infinite}
+.owl[data-mood=sleepy] .brows{transform:translateY(7px)}
+.owl[data-mood=sleepy] .pupil{transform:translate(0,5px)}
+.owl[data-mood=sleepy] .o-all{animation-duration:6.5s}
+.owl[data-mood=sleepy] .o-head{animation:headNod 6s ease-in-out infinite}
+.owl[data-mood=sleepy] .zzz text{animation:zzz 3.6s ease-out infinite}
+.owl[data-mood=sleepy] .zzz .z2{animation-delay:1.2s}
+.owl[data-mood=sleepy] .zzz .z3{animation-delay:2.4s}
+.owl[data-mood=happy] .eyes-open,.owl[data-fx=cheer] .eyes-open{opacity:0}
+.owl[data-mood=happy] .eyes-happy,.owl[data-fx=cheer] .eyes-happy{opacity:1}
+.owl[data-mood=happy] .cheek,.owl[data-fx=cheer] .cheek{opacity:1}
+.owl[data-mood=happy] .spk path{animation:twinkle 2.2s ease-in-out infinite}
+.owl[data-mood=happy] .spk .s2{animation-delay:.7s}
+.owl[data-mood=happy] .spk .s3{animation-delay:1.4s}
+.owl[data-mood=happy] .o-hop{animation:happyBob 2.6s ease-in-out infinite}
+.owl[data-fx=cheer] .o-hop{animation:ohop 1.2s cubic-bezier(.3,1.3,.4,1)}
+.owl[data-fx=cheer] .o-wl{animation:flapL .9s ease-in-out .1s 1}
+.owl[data-fx=cheer] .o-wr{animation:flapR .9s ease-in-out .1s 1}
+.owl[data-fx=cheer] .o-head{animation:headCheer 1.2s ease-in-out}
+.owl[data-fx=cheer] .mouth{animation:hootMouth .9s ease-in-out .15s 1}
+.owl[data-fx=cheer] .spk path{animation:twinkle .7s ease-in-out 3}
+.owl[data-fx=cheer] .zzz text{opacity:0;animation:none}
+
+/* owl hosts */
+.owlw{touch-action:manipulation;cursor:pointer;transform-origin:50% 100%}
+.owlw:focus-visible{outline:3px solid #fff;outline-offset:4px;border-radius:24px}
+.owlw.out{animation:owlOut .24s ease-in both}
+.owlw.in{animation:owlIn .85s cubic-bezier(.2,1.2,.3,1) both}
+
+/* ===== stage ===== */
+.stage{position:relative;height:262px;border-radius:28px;overflow:hidden;margin-bottom:14px;isolation:isolate;
+  border-bottom:6px solid rgba(0,0,0,.22);background:#334}
+.sc{position:absolute;inset:0;z-index:0}
+.scene{position:absolute;inset:0}
+.scene.wipe{animation:wipe .95s cubic-bezier(.5,0,.2,1) both}
+.sky,.gscene .sky{position:absolute;inset:0}
+.sv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.k-fall{background:linear-gradient(#F6B26B,#F58E5B 55%,#E36B4B)}
+.k-winter{background:linear-gradient(#17244A,#2E4B85 55%,#7FA6D6)}
+.k-spring{background:linear-gradient(#8FD0F5,#D7ECFF 55%,#FFE9F2)}
+.k-summer{background:linear-gradient(#35B0F0,#8FDCFF 55%,#D9F5FF)}
+.pc{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.stage .owlw{position:absolute;z-index:3;left:max(10px,3%);bottom:30px;width:150px}
+.bubble{position:absolute;z-index:4;left:calc(max(10px,3%) + 148px);right:14px;top:62px;max-width:260px;
+  background:#fff;color:#1B283A;border-radius:18px;padding:11px 14px;font:700 15px/1.3 var(--f-body);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.bubble::before{content:"";position:absolute;left:-9px;top:26px;width:18px;height:18px;background:#fff;border-radius:3px;transform:rotate(45deg)}
+.bubble span{position:relative}
+.bubble.pop{animation:bubPop .45s cubic-bezier(.2,1.5,.3,1) both}
+.sname{position:absolute;z-index:4;left:14px;top:12px;padding:6px 12px;border-radius:999px;background:rgba(0,0,0,.34);color:#fff;font:600 14px/1 var(--f-display);letter-spacing:.02em;backdrop-filter:blur(4px)}
+.gal{position:absolute;z-index:4;right:12px;top:10px;display:flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 10px;border-radius:999px;border:0;background:rgba(0,0,0,.34);color:#fff;font:600 14px/1 var(--f-display);backdrop-filter:blur(4px)}
+.gal .ic{width:18px;height:18px;stroke-width:2.6}
+.gal:hover,.chips button:hover{background:rgba(0,0,0,.5)}
+.chips{position:absolute;z-index:4;left:10px;right:10px;bottom:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.chips button{display:flex;align-items:center;justify-content:center;gap:5px;height:38px;border:0;border-radius:13px;background:rgba(0,0,0,.34);color:#fff;font:600 13.5px/1 var(--f-display);backdrop-filter:blur(4px);min-width:0}
+.chips button .ic{width:17px;height:17px;stroke-width:2.6;flex:none}
+.chips button[aria-pressed=true]{background:#fff;color:#1B283A;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.chips button:active{transform:translateY(2px)}
+
+/* scenery motion */
+.sway{animation:treeSway 5.5s ease-in-out infinite}
+.sway.s2{animation-duration:6.5s;animation-delay:-2s}
+.sway.s3{animation-duration:4.8s;animation-delay:-3s}
+.drift{animation:drift 70s linear infinite}
+.pulse{animation:sunPulse 4.5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%}
+.spin{animation:spin 60s linear infinite}
+.twk{animation:twk 3s ease-in-out infinite}
+.aur{animation:aur 9s ease-in-out infinite alternate}
+.aur.a2{animation-duration:12s;animation-direction:alternate-reverse}
+.wave{animation:waveX 5s linear infinite}
+.wave.w2{animation-duration:7s;animation-direction:reverse}
+
+/* gallery */
+.gsheet .ptext{margin:6px 0 14px}
+.gtiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gtile{position:relative;height:196px;padding:0;border:3px solid transparent;border-radius:22px;overflow:hidden;isolation:isolate;background:#334;box-shadow:0 5px 0 rgba(0,0,0,.2);animation:rise .5s ease var(--d,0ms) both;text-align:left}
+.gtile[aria-pressed=true]{border-color:var(--fg)}
+.gtile:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+.gscene{position:absolute;inset:0}
+.gowl{position:absolute;z-index:3;left:50%;bottom:20px;width:min(112px,62%);translate:-50% 0;pointer-events:none}
+.gname{position:absolute;z-index:4;left:10px;top:9px;padding:5px 10px 6px;border-radius:12px;background:rgba(0,0,0,.38);color:#fff;font:600 16px/1.05 var(--f-display);display:grid;gap:2px}
+.gname small{font:700 10.5px/1 var(--f-body);letter-spacing:.07em;text-transform:uppercase;opacity:.78}
+
+/* owl on other screens */
+.w-owl{width:178px;margin-bottom:2px;animation:owlIn .9s cubic-bezier(.2,1.2,.3,1) both}
+.w-owl.sm{width:124px}
+.cele-owl{width:176px;animation:owlIn .9s cubic-bezier(.2,1.2,.3,1) both}
+.empty .e-owl{width:116px;margin-bottom:4px}
+
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.012,1.026)}}
+@keyframes headTilt{0%,38%,100%{transform:rotate(0)}46%{transform:rotate(-5deg)}54%{transform:rotate(-5deg)}62%{transform:rotate(0)}78%{transform:rotate(4deg)}86%{transform:rotate(4deg)}94%{transform:rotate(0)}}
+@keyframes headNod{0%,100%{transform:rotate(2deg) translateY(2px)}50%{transform:rotate(7deg) translateY(10px)}}
+@keyframes headCheer{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}60%{transform:rotate(7deg)}}
+@keyframes wingTwitch{0%,90%,100%{transform:rotate(0)}93%{transform:rotate(7deg)}96%{transform:rotate(0)}98%{transform:rotate(5deg)}}
+@keyframes tuft{0%,86%,100%{transform:rotate(0)}90%{transform:rotate(-9deg)}94%{transform:rotate(4deg)}}
+@keyframes blink{0%,91%,100%{transform:scaleY(0)}94%{transform:scaleY(1.02)}97%{transform:scaleY(0)}}
+@keyframes drowse{0%,100%{transform:scaleY(.62)}45%{transform:scaleY(.86)}55%{transform:scaleY(.98)}70%{transform:scaleY(.66)}}
+@keyframes flapL{0%,100%{transform:rotate(0)}20%{transform:rotate(44deg)}40%{transform:rotate(6deg)}60%{transform:rotate(44deg)}80%{transform:rotate(6deg)}}
+@keyframes flapR{0%,100%{transform:rotate(0)}20%{transform:rotate(-44deg)}40%{transform:rotate(-6deg)}60%{transform:rotate(-44deg)}80%{transform:rotate(-6deg)}}
+@keyframes ohop{0%{transform:translateY(0) scale(1,1)}14%{transform:translateY(0) scale(1.08,.9)}38%{transform:translateY(-34px) scale(.95,1.08)}62%{transform:translateY(0) scale(1.07,.92)}78%{transform:translateY(-12px) scale(.98,1.03)}100%{transform:translateY(0) scale(1,1)}}
+@keyframes happyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes hootMouth{0%,100%{transform:scaleY(0)}25%,70%{transform:scaleY(1)}45%{transform:scaleY(.4)}}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes zzz{0%{opacity:0;transform:translate(0,10px) scale(.7)}25%{opacity:1}100%{opacity:0;transform:translate(8px,-18px) scale(1.15)}}
+@keyframes accSway{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.6deg)}}
+@keyframes pomBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.06)}}
+@keyframes scarfWave{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(5deg)}}
+@keyframes bloomPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes glint{0%,60%,100%{opacity:0;transform:scale(.2) rotate(0)}75%{opacity:1;transform:scale(1.2) rotate(45deg)}}
+@keyframes owlIn{0%{transform:scale(0) rotate(-200deg)}55%{transform:scale(1.18) rotate(12deg)}78%{transform:scale(.95) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes owlOut{to{transform:scale(.1) rotate(120deg);opacity:0}}
+@keyframes wipe{from{clip-path:circle(0 at var(--ox) var(--oy))}to{clip-path:circle(150% at var(--ox) var(--oy))}}
+@keyframes bubPop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes treeSway{0%,100%{transform:rotate(-1.4deg)}50%{transform:rotate(1.4deg)}}
+@keyframes drift{from{transform:translateX(-80px)}to{transform:translateX(480px)}}
+@keyframes sunPulse{0%,100%{transform:scale(1);opacity:.22}50%{transform:scale(1.14);opacity:.36}}
+@keyframes twk{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes aur{from{transform:translateX(-26px) scaleY(.8)}to{transform:translateX(34px) scaleY(1.3)}}
+@keyframes waveX{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+@media (max-width:380px){.stage .owlw{width:132px;bottom:32px}.bubble{left:calc(max(10px,3%) + 128px);font-size:14px;top:58px}.chips button{font-size:12.5px;gap:3px}}
+@media (min-width:700px){.stage{height:290px}.stage .owlw{width:170px;left:7%;bottom:34px}.bubble{left:calc(7% + 172px);font-size:17px;top:84px}}
 </style>
 </head>
 <body>
@@ -321,6 +467,9 @@ input[type=text]:focus{outline:none;border-color:var(--c,var(--flame))}
       <path style="fill:var(--flame);stroke:var(--flame);stroke-width:5;stroke-linejoin:round" d="M32 2C35 15 56 26 56 47C56 63 46 74 32 77C18 74 8 63 8 47C8 38 13 31 18 26C18 33 21 38 26 39C23 26 27 12 32 2Z"/>
       <path style="fill:var(--flame-hi);stroke:var(--flame-hi);stroke-width:3;stroke-linejoin:round" d="M32 34C34 43 44 48 44 58C44 65 39 71 32 72C25 71 20 65 20 58C20 51 25 47 27 41C29 38 31 36 32 34Z"/>
     </symbol>
+    <symbol id="ic-snow" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.5 4.5L12 6.5l2.5-2M9.5 19.5L12 17.5l2.5 2"/></symbol>
+    <symbol id="ic-flower" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.6"/><path d="M12 9.4C10 6 10.5 3.5 12 3c1.5.5 2 3 0 6.4zM14.6 12c3.4-2 5.9-1.5 6.4 0-.5 1.5-3 2-6.4 0zM12 14.6c2 3.4 1.5 5.9 0 6.4-1.5-.5-2-3 0-6.4zM9.4 12c-3.4 2-5.9 1.5-6.4 0 .5-1.5 3-2 6.4 0z"/></symbol>
+    <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></symbol>
     <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5.5 5.5 5.5 10.5a5.5 5.5 0 0 1-11 0c0-2.2 1-3.5 2.2-4.6 0 1.9.9 3 2.1 3.1C10.2 8.8 10.5 6 12 3z"/></symbol>
     <symbol id="ic-sun" viewBox="0 0 24 24"><path d="M12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
     <symbol id="ic-drop" viewBox="0 0 24 24"><path d="M12 3c3.2 4 6 7 6 11a6 6 0 0 1-12 0c0-4 2.8-7 6-11z"/></symbol>
@@ -357,6 +506,15 @@ input[type=text]:focus{outline:none;border-color:var(--c,var(--flame))}
     </div>
   </header>
 
+  <section class="stage" id="stage" data-season="fall" aria-label="Wick the owl">
+    <div class="sc" id="scBox"></div>
+    <canvas class="pc" id="stCv" aria-hidden="true"></canvas>
+    <span class="sname" id="sname">Fall</span>
+    <button class="gal" id="gal" type="button" aria-label="See Wick in all four seasons"><svg class="ic" aria-hidden="true"><use href="#ic-grid"/></svg>All seasons</button>
+    <div class="owlw" id="owlMain" role="button" tabindex="0" aria-label="Wick the owl. Tap to say hi."></div>
+    <div class="bubble pop" id="bubble" aria-live="polite"><span></span></div>
+  </section>
+
   <section class="hero" id="hero" aria-live="polite">
     <div class="ring" id="ring" role="progressbar" aria-label="Streaks collected today" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <svg class="rg" viewBox="0 0 120 120" aria-hidden="true"><circle class="trk" cx="60" cy="60" r="52"/><circle class="prg" id="prg" cx="60" cy="60" r="52"/></svg>
@@ -383,7 +541,7 @@ input[type=text]:focus{outline:none;border-color:var(--c,var(--flame))}
   <ul class="list" id="list"></ul>
   <p class="donemsg" id="doneMsg" hidden>Everything is collected for today.</p>
   <div class="empty" id="empty" hidden>
-    <svg class="flame" aria-hidden="true"><use href="#flame"/></svg>
+    <div class="e-owl" id="emptyOwl" aria-hidden="true"></div>
     <h3>No streaks yet</h3>
     <p>Make one, then come back every day to collect +1.</p>
     <button class="btn-3d" id="emptyAdd" type="button">Start a streak</button>
@@ -428,19 +586,26 @@ input[type=text]:focus{outline:none;border-color:var(--c,var(--flame))}
   </div>
 </div>
 
+<div class="sheet gsheet" id="gsheet" role="dialog" aria-modal="true" aria-labelledby="gTitle" hidden>
+  <div class="grab"></div>
+  <div class="sheet-head"><h2 id="gTitle">Meet Wick</h2><button class="icon-btn" id="gClose" type="button" aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg></button></div>
+  <p class="ptext">Wick changes outfit by himself as the seasons change. Right now it is <b id="gNow"></b>. Tap any of them to say hi.</p>
+  <div class="gtiles" id="gtiles"></div>
+</div>
+
 <div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
   <div class="rays"></div>
   <button class="icon-btn wclose" id="wClose" type="button" aria-label="Close" hidden><svg class="ic" aria-hidden="true"><use href="#ic-x"/></svg></button>
   <div class="w-in" id="wStep1">
-    <svg class="flame w-flame" aria-hidden="true"><use href="#flame"/></svg>
+    <div class="w-owl" id="wOwl1" aria-hidden="true"></div>
     <h2 id="wTitle">Easy Streaks</h2>
-    <p class="tag">Show up. Collect +1. Keep the flame alive.</p>
+    <p class="tag">Show up. Collect +1. Wick the owl cheers you on.</p>
     <button class="btn-3d wide" id="wCreate" type="button">Create account</button>
     <button class="btn-3d wide ghost" id="wGuest" type="button">Continue as guest</button>
     <p class="fine">Guest streaks stay in this browser. An account saves them to your Claude sign-in, so they follow you to other devices. No password to remember.</p>
   </div>
   <div class="w-in" id="wStep2" hidden>
-    <svg class="flame w-flame sm" aria-hidden="true"><use href="#flame"/></svg>
+    <div class="w-owl sm" id="wOwl2" aria-hidden="true"></div>
     <h2>Create your account</h2>
     <p class="tag" style="margin-bottom:14px">Pick a name and a colour. That is all it takes.</p>
     <label class="lbl" for="wName">Your name</label>
@@ -456,7 +621,7 @@ input[type=text]:focus{outline:none;border-color:var(--c,var(--flame))}
 <div class="cele" id="cele" role="dialog" aria-modal="true" aria-labelledby="celeTitle" hidden>
   <div class="rays"></div>
   <div class="cele-in">
-    <svg class="flame cele-flame" aria-hidden="true"><use href="#flame"/></svg>
+    <div class="cele-owl" id="celeOwl" aria-hidden="true"></div>
     <p class="cele-num" id="celeNum">1</p>
     <h2 id="celeTitle">Streak started</h2>
     <p class="cele-sub" id="celeSub"></p>
@@ -481,6 +646,7 @@ var PAL=[
   {n:'Indigo',c:'#6165EF',d:'#4448C6',i:'#FFFFFF'},
   {n:'Pink',c:'#E5468A',d:'#BB2D6B',i:'#FFFFFF'}
 ];
+var SEASONS=['fall','winter','spring','summer'];
 var ICONS=['flame','sun','drop','leaf','star','moon','heart','bolt','book','music','mountain','cup','dumbbell','smile'];
 var IDEAS=['Drink water','Stretch','Take a walk','Read a page','Go to bed early','Say hi to someone'];
 var MILES=[7,14,30,50,100,200,365,500,1000];
@@ -522,11 +688,11 @@ function shown(s){var st=status(s);return (st==='done'||st==='pending')?s.count:
 function uid(){return Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3)}
 function clone(o){return JSON.parse(JSON.stringify(o))}
 function seed(){
-  return {v:1,sound:true,updatedAt:0,streaks:[{id:uid(),name:'Showing up',color:5,icon:'sun',created:today,last:null,count:0,best:0,total:0,days:[]}]};
+  return {v:1,sound:true,season:'auto',updatedAt:0,streaks:[{id:uid(),name:'Showing up',color:5,icon:'sun',created:today,last:null,count:0,best:0,total:0,days:[]}]};
 }
 function clean(r){
   if(!r||!Array.isArray(r.streaks)) return null;
-  var out={v:1,sound:r.sound!==false,updatedAt:+r.updatedAt||0,streaks:[]};
+  var out={v:1,sound:r.sound!==false,season:SEASONS.indexOf(r.season)>-1?r.season:'auto',updatedAt:+r.updatedAt||0,streaks:[]};
   if(r.profile&&typeof r.profile.name==='string'&&r.profile.name.trim()){
     out.profile={name:r.profile.name.trim().slice(0,20),color:PAL[r.profile.color]?+r.profile.color:0};
   }
@@ -547,7 +713,7 @@ function loadLocal(){
 }
 function saveLocal(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
 
-var STANDALONE=true; /* hosted outside Claude: no accounts, saved on this device */
+var STANDALONE=true;
 var acct=null; /* 'account' | 'guest' | null (not chosen yet) */
 try{var m0=localStorage.getItem(MODE_KEY);if(m0==='account'||m0==='guest')acct=m0}catch(e){}
 if(STANDALONE)acct='guest';
@@ -812,6 +978,7 @@ function paintHero(){
   }
   hero.classList.toggle('lit',lit);
   lastLit=lit;
+  paintStage();
 }
 function greeting(){var h=new Date().getHours();return h<5?'Late night':h<12?'Good morning':h<18?'Good afternoon':'Good evening'}
 function paintAvatar(el){
@@ -889,6 +1056,432 @@ function collect(id,btn){
   }
 }
 
+/* ---------- Wick the owl: palettes + drawing ---------- */
+var K={
+  fall:{body:'#B8691F',dark:'#8C4A14',wing:'#9C5719',wline:'#7A3E10',belly:'#F4DDAE',bline:'#DDBB80',disc:'#EBC48A',dline:'#C99458',iris:'#5B3A12',beak:'#F4A53B',beakD:'#C97F1E',cheek:'#E8795A',brow:'#7A3E10',zz:'#FFE6B0'},
+  winter:{body:'#C8DCF0',dark:'#9CB8D6',wing:'#B2CAE4',wline:'#85A2C4',belly:'#FFFFFF',bline:'#D9E6F4',disc:'#F3F8FF',dline:'#B9CFE6',iris:'#2F4B73',beak:'#F5A83B',beakD:'#C9811F',cheek:'#F4A3B5',brow:'#7F9CBD',zz:'#DCEBFF'},
+  spring:{body:'#C4B2EE',dark:'#A089D8',wing:'#B09CE3',wline:'#8D76C6',belly:'#FFF4FA',bline:'#EBDAF6',disc:'#EEE5FF',dline:'#C6B3EC',iris:'#4A3A7A',beak:'#FFB347',beakD:'#D98A1F',cheek:'#FF8FAB',brow:'#8D76C6',zz:'#FFFFFF'},
+  summer:{body:'#F0B23A',dark:'#D6922A',wing:'#E3A02F',wline:'#BC7B1B',belly:'#FFF1C9',bline:'#F0D08A',disc:'#FAD584',dline:'#E5B358',iris:'#5A3A0E',beak:'#FF8A3D',beakD:'#D1621C',cheek:'#FF8F6B',brow:'#BC7B1B',zz:'#FFFFFF'}
+};
+function arcs(y,x0,n){var d='';for(var i=0;i<n;i++){d+='M'+(x0+i*14)+' '+y+' q7 9 14 0 '}return d}
+function foot(x,k){
+  return '<g transform="translate('+x+' 254)"><path d="M-19 7C-19-6-10-12 0-12S19-6 19 7C19 11 15 12 11 12H-11C-15 12-19 11-19 7Z" fill="'+k.beak+'"/>'+
+    '<path d="M-8 0V9M0-1V10M8 0V9" stroke="'+k.beakD+'" stroke-width="3" stroke-linecap="round"/></g>';
+}
+function eye(cx,k){
+  return '<g transform="translate('+cx+' 104)">'+
+    '<g class="eyes-open"><circle r="31" fill="#fff" stroke="'+k.brow+'" stroke-width="3"/>'+
+    '<g class="pupil"><circle r="21" fill="'+k.iris+'"/><circle r="12" fill="#1B1B22"/><circle cx="-7" cy="-8" r="7" fill="#fff"/><circle cx="7" cy="6" r="3.2" fill="#fff"/></g>'+
+    '<circle class="lid" r="33" fill="'+k.disc+'"/></g>'+
+    '<path class="eyes-happy" d="M-24 9Q0-24 24 9" fill="none" stroke="'+k.iris+'" stroke-width="8" stroke-linecap="round"/></g>';
+}
+function flower(x,y,c,r){
+  var p='',i,a;
+  for(i=0;i<5;i++){a=i*72*Math.PI/180;p+='<circle cx="'+(x+Math.sin(a)*r*.9).toFixed(1)+'" cy="'+(y-Math.cos(a)*r*.9).toFixed(1)+'" r="'+(r*.62).toFixed(1)+'" fill="'+c+'"/>'}
+  return '<g class="bloom">'+p+'<circle cx="'+x+'" cy="'+y+'" r="'+(r*.5).toFixed(1)+'" fill="#FFD54F"/></g>';
+}
+function accFall(){
+  return '<g transform="translate(0 -6) rotate(-16 124 40)"><g class="acc-sway" style="transform-origin:122px 60px">'+
+    '<path d="M122 6C146 14 156 38 146 60C128 66 110 58 102 42C100 26 108 14 122 6Z" fill="#E4572E"/>'+
+    '<path d="M124 14C122 32 128 48 142 58M124 28L110 38M126 40L140 40" stroke="#B53A1C" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
+    '<path d="M110 60L103 73" stroke="#8A3A10" stroke-width="4" stroke-linecap="round"/></g></g>';
+}
+function accWinter(){
+  var fuzz='',i,a;
+  for(i=0;i<9;i++){a=i*40*Math.PI/180;fuzz+='<circle cx="'+(120+Math.sin(a)*13).toFixed(1)+'" cy="'+(-2-Math.cos(a)*13).toFixed(1)+'" r="5" fill="#F7F9FC"/>'}
+  return '<g transform="translate(0 -6)"><g class="acc-sway" style="transform-origin:120px 56px">'+
+    '<path d="M70 52C70 20 96 6 120 6C144 6 170 20 170 52Z" fill="#D64545"/>'+
+    '<path d="M92 14L88 48M106 8L104 48M120 6V48M134 8L136 48M148 14L152 48" stroke="#B83232" stroke-width="3" stroke-linecap="round"/>'+
+    '<rect x="64" y="42" width="112" height="24" rx="12" fill="#F7F9FC"/>'+
+    '<path d="M78 47V61M91 47V61M104 47V61M117 47V61M130 47V61M143 47V61M156 47V61" stroke="#D5DEE9" stroke-width="3" stroke-linecap="round"/>'+
+    '<g class="pom">'+fuzz+'<circle cx="120" cy="-2" r="14" fill="#F7F9FC"/></g></g></g>';
+}
+function neckWinter(){
+  return '<path d="M56 150Q120 184 184 150L190 174Q120 208 50 174Z" fill="#D64545"/>'+
+    '<path d="M72 161L68 181M96 169L93 190M120 173V194M144 169L147 190M168 161L172 181" stroke="#F7F9FC" stroke-width="6" stroke-linecap="round"/>'+
+    '<g class="scarf-tail" style="transform-origin:174px 178px"><path d="M158 180L194 174L200 232L166 238Z" fill="#D64545"/>'+
+    '<path d="M164 200L197 194M166 218L199 212" stroke="#F7F9FC" stroke-width="7"/>'+
+    '<path d="M167 238l-2 8M177 237l-1 8M187 235l0 8M198 233l1 8" stroke="#F7F9FC" stroke-width="3" stroke-linecap="round"/></g>';
+}
+function accSpring(){
+  return '<g transform="translate(0 -4)"><g class="acc-sway" style="transform-origin:120px 56px">'+
+    '<path d="M62 68Q120 14 178 68" fill="none" stroke="#4FA244" stroke-width="6" stroke-linecap="round"/>'+
+    '<ellipse cx="88" cy="48" rx="10" ry="5" transform="rotate(-35 88 48)" fill="#6BC15C"/>'+
+    '<ellipse cx="108" cy="42" rx="10" ry="5" transform="rotate(-12 108 42)" fill="#6BC15C"/>'+
+    '<ellipse cx="132" cy="42" rx="10" ry="5" transform="rotate(12 132 42)" fill="#6BC15C"/>'+
+    '<ellipse cx="152" cy="48" rx="10" ry="5" transform="rotate(35 152 48)" fill="#6BC15C"/>'+
+    flower(66,66,'#FFFFFF',6.5)+flower(174,66,'#FFFFFF',6.5)+
+    flower(79,54,'#FF8FAB',9)+flower(97,44,'#FFFFFF',9)+flower(120,40,'#FFB88C',10.5)+flower(143,44,'#FFFFFF',9)+flower(161,54,'#FF8FAB',9)+
+    '</g></g>';
+}
+function accSummer(){
+  return '<path d="M114 102Q120 93 126 102" stroke="#1F7A8C" stroke-width="6" fill="none" stroke-linecap="round"/>'+
+    '<path d="M57 100L38 93M183 100L202 93" stroke="#1F7A8C" stroke-width="6" stroke-linecap="round"/>'+
+    '<circle cx="88" cy="106" r="31" fill="#0E3F4C" fill-opacity=".9" stroke="#1F7A8C" stroke-width="6"/>'+
+    '<circle cx="152" cy="106" r="31" fill="#0E3F4C" fill-opacity=".9" stroke="#1F7A8C" stroke-width="6"/>'+
+    '<path d="M70 92L82 80M134 92L146 80" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>'+
+    '<g transform="translate(106 86)"><path class="glint" d="M0-9Q1.3-1.3 9 0Q1.3 1.3 0 9Q-1.3 1.3-9 0Q-1.3-1.3 0-9Z" fill="#fff"/></g>';
+}
+function owlSVG(season,mood){
+  var k=K[season],acc='',neck='';
+  if(season==='fall')acc=accFall();
+  else if(season==='winter'){acc=accWinter();neck=neckWinter()}
+  else if(season==='spring')acc=accSpring();
+  else acc=accSummer();
+  var tuftL='M60 80C48 62 44 42 50 24C52 17 59 18 64 22C78 34 90 46 98 58Z';
+  var tuftR='M180 80C192 62 196 42 190 24C188 17 181 18 176 22C162 34 150 46 142 58Z';
+  var disc='<circle cx="88" cy="104" r="46"/><circle cx="152" cy="104" r="46"/><ellipse cx="120" cy="112" rx="30" ry="36"/>';
+  return '<svg class="owl" data-season="'+season+'" data-mood="'+mood+'" viewBox="0 -22 240 302" aria-hidden="true" focusable="false">'+
+    '<ellipse cx="120" cy="262" rx="74" ry="9" fill="#000" opacity=".2"/>'+
+    '<g class="o-hop"><g class="o-all">'+
+    foot(88,k)+foot(152,k)+
+    '<path d="M120 36C172 36 208 80 208 140C208 205 176 250 120 250C64 250 32 205 32 140C32 80 68 36 120 36Z" fill="'+k.body+'"/>'+
+    '<path d="M44 190C50 236 86 250 120 250C154 250 190 236 196 190C176 226 150 236 120 236C90 236 64 226 44 190Z" fill="'+k.dark+'" opacity=".2"/>'+
+    '<ellipse cx="120" cy="196" rx="54" ry="56" fill="'+k.belly+'"/>'+
+    '<path d="'+arcs(172,99,3)+arcs(190,92,4)+arcs(208,99,3)+arcs(226,106,2)+'" fill="none" stroke="'+k.bline+'" stroke-width="3.5" stroke-linecap="round"/>'+
+    '<g class="o-wl"><path d="M54 120C26 138 22 196 56 228C72 214 78 166 68 124Z" fill="'+k.wing+'"/>'+
+    '<path d="M37 172Q51 178 60 170M35 192Q49 200 62 190M42 210Q54 216 64 207" fill="none" stroke="'+k.wline+'" stroke-width="3" stroke-linecap="round"/></g>'+
+    '<g class="o-wr"><path d="M186 120C214 138 218 196 184 228C168 214 162 166 172 124Z" fill="'+k.wing+'"/>'+
+    '<path d="M203 172Q189 178 180 170M205 192Q191 200 178 190M198 210Q186 216 176 207" fill="none" stroke="'+k.wline+'" stroke-width="3" stroke-linecap="round"/></g>'+
+    neck+
+    '<g class="o-head">'+
+    '<path class="o-tl" d="'+tuftL+'" fill="'+k.dark+'"/><path class="o-tr" d="'+tuftR+'" fill="'+k.dark+'"/>'+
+    '<g fill="'+k.dline+'" stroke="'+k.dline+'" stroke-width="7" stroke-linejoin="round">'+disc+'</g>'+
+    '<g fill="'+k.disc+'">'+disc+'</g>'+
+    '<ellipse class="cheek" cx="62" cy="138" rx="13" ry="8" fill="'+k.cheek+'"/><ellipse class="cheek" cx="178" cy="138" rx="13" ry="8" fill="'+k.cheek+'"/>'+
+    eye(88,k)+eye(152,k)+
+    '<g class="brows" fill="none" stroke="'+k.brow+'" stroke-width="6" stroke-linecap="round"><path d="M56 68Q80 54 110 66"/><path d="M130 66Q160 54 184 68"/></g>'+
+    '<ellipse class="mouth" cx="120" cy="140" rx="11" ry="10" fill="#5A2A12"/>'+
+    '<path d="M105 117Q120 103 135 117Q135 135 120 151Q105 135 105 117Z" fill="'+k.beak+'" stroke="'+k.beakD+'" stroke-width="2.5" stroke-linejoin="round"/>'+
+    '<path d="M113 125Q120 130 127 125" fill="none" stroke="'+k.beakD+'" stroke-width="3" stroke-linecap="round"/>'+
+    acc+
+    '</g>'+
+    '<g class="spk" fill="#FFE16B"><g transform="translate(22 66)"><path class="s1" d="M0-10Q1.6-1.6 10 0Q1.6 1.6 0 10Q-1.6 1.6-10 0Q-1.6-1.6 0-10Z"/></g><g transform="translate(220 84)"><path class="s2" d="M0-9Q1.4-1.4 9 0Q1.4 1.4 0 9Q-1.4 1.4-9 0Q-1.4-1.4 0-9Z"/></g><g transform="translate(212 24)"><path class="s3" d="M0-8Q1.2-1.2 8 0Q1.2 1.2 0 8Q-1.2 1.2-8 0Q-1.2-1.2 0-8Z"/></g></g>'+
+    '<g class="zzz" font-family="Fredoka,Nunito,sans-serif" font-weight="700" fill="'+k.zz+'" stroke="rgba(0,0,0,.28)" stroke-width="1.2" paint-order="stroke"><text class="z1" x="178" y="24" font-size="20">z</text><text class="z2" x="194" y="6" font-size="26">z</text><text class="z3" x="210" y="-10" font-size="32">z</text></g>'+
+    '</g></g></svg>';
+}
+/* ---------- scenery (hand-drawn SVG, animated with CSS) ---------- */
+function rep(n,f){var s='';for(var i=0;i<n;i++)s+=f(i);return s}
+function pine(x,y,s,snow){
+  return '<g transform="translate('+x+' '+y+') scale('+s+')"><g class="sway" style="transform-origin:0px 8px">'+
+    '<rect x="-4" y="-6" width="8" height="14" fill="#5B3A2A"/>'+
+    '<path d="M0-78L26-34H-26Z" fill="#2F6B55"/><path d="M0-58L32-10H-32Z" fill="#2A5F4B"/><path d="M0-34L38 0H-38Z" fill="#245441"/>'+
+    (snow?'<path d="M0-78L10-62Q0-58-10-62Z M-12-40L-4-30Q-14-26-24-30Z M13-40L24-30Q14-26 4-30Z" fill="#F7FBFF"/>':'')+'</g></g>';
+}
+function roundTree(x,y,s,cr,cr2,cls){
+  return '<g transform="translate('+x+' '+y+') scale('+s+')"><g class="'+(cls||'sway')+'" style="transform-origin:0px 8px">'+
+    '<path d="M-5 8L-3-40H3L5 8Z" fill="#6B4226"/><path d="M0-30L-14-46M0-24L16-40" stroke="#6B4226" stroke-width="4" stroke-linecap="round"/>'+
+    '<circle cx="-16" cy="-52" r="22" fill="'+cr+'"/><circle cx="16" cy="-54" r="22" fill="'+cr2+'"/><circle cx="0" cy="-70" r="24" fill="'+cr+'"/><circle cx="2" cy="-48" r="22" fill="'+cr2+'"/></g></g>';
+}
+function cloud(x,y,s,o){
+  return '<g class="drift" style="animation-duration:'+(60+o*13)+'s;animation-delay:-'+(o*17)+'s"><g transform="translate('+x+' '+y+') scale('+s+')" fill="#fff" opacity=".92">'+
+    '<ellipse cx="0" cy="0" rx="30" ry="12"/><ellipse cx="-16" cy="-8" rx="16" ry="12"/><ellipse cx="8" cy="-13" rx="19" ry="15"/></g></g>';
+}
+function scene(season){
+  var d='';
+  if(season==='fall'){
+    d+='<circle class="pulse" cx="296" cy="118" r="84" fill="#FFE29A" opacity=".22"/><circle cx="296" cy="118" r="46" fill="#FFE9B0"/>'+
+      cloud(90,70,1.1,1)+cloud(250,44,.8,3)+
+      '<path d="M0 196Q70 152 160 184T330 172T400 180V290H0Z" fill="#D9733A"/>'+
+      '<path d="M0 214Q110 178 210 208T400 198V290H0Z" fill="#B5542A"/>'+
+      roundTree(318,226,1,'#E4572E','#F4A53B')+roundTree(372,232,.78,'#F4A53B','#D9531F','sway s2')+roundTree(250,236,.6,'#C9461F','#F4A53B','sway s3')+
+      '<path d="M0 232Q190 216 400 234V290H0Z" fill="#7A3E1A"/><path d="M0 246Q200 232 400 248V290H0Z" fill="#69331A"/>'+
+      '<g>'+rep(16,function(i){var x=(i*37+11)%400,y=240+(i*13)%34;return '<ellipse cx="'+x+'" cy="'+y+'" rx="9" ry="4.5" transform="rotate('+((i*47)%80-40)+' '+x+' '+y+')" fill="'+['#E4572E','#F4A53B','#C9461F','#FFC857'][i%4]+'"/>'})+'</g>'+
+      '<g transform="translate(240 252)"><ellipse rx="19" ry="12" fill="#E4A25F"/><ellipse cy="-2" rx="12" ry="9" fill="#F4A53B"/><path d="M-4-9Q0-18 4-9" fill="none" stroke="#7B4A14" stroke-width="2.5" stroke-linecap="round"/><circle cx="-6" cy="-11" r="2.5" fill="#fff"/></g>';
+  }else if(season==='winter'){
+    d+='<defs><filter id="blr"><feGaussianBlur stdDeviation="9"/></filter></defs>'+
+      '<g filter="url(#blr)" opacity=".55"><ellipse class="aur" cx="140" cy="62" rx="120" ry="14" fill="#5EEAD4"/><ellipse class="aur a2" cx="260" cy="82" rx="110" ry="12" fill="#A78BFA"/></g>'+
+      rep(22,function(i){return '<circle class="twk" style="animation-delay:-'+(i%7)*.4+'s" cx="'+((i*53+17)%400)+'" cy="'+((i*29+9)%130+6)+'" r="'+(i%3?1:1.6)+'" fill="#fff"/>'})+
+      '<circle cx="312" cy="62" r="26" fill="#FFF6D6"/><circle cx="324" cy="55" r="22" fill="#26396B" opacity=".55"/>'+
+      '<path d="M0 196L66 132L112 176L186 116L262 184L336 140L400 190V290H0Z" fill="#5F7FB0"/>'+
+      '<path d="M66 132L50 150L66 146L78 156ZM186 116L168 138L184 132L198 142ZM336 140L322 156L338 152L350 160Z" fill="#E8F1FB"/>'+
+      '<path d="M0 214Q110 182 210 210T400 200V290H0Z" fill="#C9DCF2"/>'+
+      pine(318,230,.95,1)+pine(364,238,.7,1)+pine(268,240,.55,1)+
+      '<g transform="translate(236 244)"><ellipse cy="-4" rx="16" ry="14" fill="#fff"/><circle cy="-24" r="11" fill="#fff"/><path d="M0-24L11-21L0-19Z" fill="#F5A83B"/><circle cx="-4" cy="-27" r="1.6" fill="#222"/><circle cx="4" cy="-27" r="1.6" fill="#222"/><path d="M-11-15Q0-9 11-15L12-10Q0-4-12-10Z" fill="#D64545"/></g>'+
+      '<path d="M0 234Q190 218 400 236V290H0Z" fill="#F7FBFF"/><path d="M0 252Q200 238 400 254V290H0Z" fill="#DCE8F6"/>';
+  }else if(season==='spring'){
+    d+='<g class="spin" style="transform-origin:62px 62px"><circle cx="62" cy="62" r="62" fill="#FFF3B0" opacity=".25"/></g><circle cx="62" cy="62" r="30" fill="#FFF0A6"/>'+
+      '<g fill="none" stroke-width="8" opacity=".5"><path d="M110 196A130 130 0 0 1 370 196" stroke="#FF8FAB"/><path d="M118 196A122 122 0 0 1 362 196" stroke="#FFD166"/><path d="M126 196A114 114 0 0 1 354 196" stroke="#8BD17C"/><path d="M134 196A106 106 0 0 1 346 196" stroke="#7CC6F5"/></g>'+
+      cloud(210,54,1,2)+cloud(330,86,.7,4)+cloud(100,100,.8,6)+
+      '<path d="M0 196Q80 160 170 190T340 176T400 184V290H0Z" fill="#A7DE8B"/>'+
+      '<path d="M0 216Q110 182 210 212T400 202V290H0Z" fill="#7CC46B"/>'+
+      roundTree(322,230,1,'#FFB7C9','#FF8FAB')+roundTree(368,236,.74,'#FFD1DC','#FFB7C9','sway s2')+
+      '<path d="M0 234Q190 220 400 236V290H0Z" fill="#5DB254"/><path d="M0 252Q200 238 400 254V290H0Z" fill="#4CA047"/>'+
+      rep(26,function(i){var x=(i*43+9)%400,y=244+(i*17)%34;return '<g class="bloom" style="animation-delay:-'+(i%6)*.5+'s"><circle cx="'+x+'" cy="'+y+'" r="5" fill="'+['#fff','#FF8FAB','#FFD166','#C4B2EE'][i%4]+'"/><circle cx="'+x+'" cy="'+y+'" r="1.8" fill="#FFB300"/></g>'});
+  }else{
+    d+='<g class="spin" style="transform-origin:84px 70px" stroke="#FFE57A" stroke-width="6" stroke-linecap="round">'+rep(12,function(i){var a=i*30*Math.PI/180;return '<path d="M'+(84+Math.sin(a)*52).toFixed(1)+' '+(70-Math.cos(a)*52).toFixed(1)+'L'+(84+Math.sin(a)*68).toFixed(1)+' '+(70-Math.cos(a)*68).toFixed(1)+'"/>'})+'</g>'+
+      '<circle cx="84" cy="70" r="40" fill="#FFE57A"/><circle cx="84" cy="70" r="30" fill="#FFF3B0"/>'+
+      cloud(250,56,1.1,1)+cloud(350,100,.75,3)+cloud(160,110,.6,5)+
+      '<path d="M0 176Q120 168 230 176T400 172V214H0Z" fill="#27B5D8"/>'+
+      '<g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"><g class="wave"><path d="M-40 186q10-7 20 0t20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0"/></g><g class="wave w2"><path d="M-40 200q10-7 20 0t20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0 20 0"/></g></g>'+
+      '<path d="M0 222Q120 206 230 220T400 214V290H0Z" fill="#F6D58E"/>'+
+      '<path d="M0 236Q190 222 400 238V290H0Z" fill="#F0C673"/><path d="M0 256Q200 242 400 258V290H0Z" fill="#E8B95D"/>'+
+      '<g class="sway" style="transform-origin:330px 246px"><path d="M330 248Q324 200 344 158" stroke="#8A5A2B" stroke-width="9" fill="none" stroke-linecap="round"/>'+
+      '<g fill="#2E9E4F"><path d="M344 160Q312 140 296 160Q322 150 344 164Z"/><path d="M344 160Q330 126 304 128Q326 134 344 160Z"/><path d="M344 160Q364 126 392 134Q366 136 344 160Z"/><path d="M344 160Q380 148 396 170Q372 160 344 164Z"/><path d="M344 160Q348 134 372 118Q356 140 344 160Z"/></g><circle cx="340" cy="164" r="5" fill="#7A4A1F"/><circle cx="350" cy="168" r="5" fill="#7A4A1F"/></g>'+
+      '<g transform="translate(236 250)"><path d="M0 0L-2-46" stroke="#fff" stroke-width="3"/><path d="M-34-42Q-2-70 30-42Z" fill="#FF6B6B"/><path d="M-12-52L-2-46L-20-45ZM8-52L-2-46L14-44Z" fill="#fff"/></g>';
+  }
+  return '<svg class="sv" viewBox="0 0 400 290" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">'+d+'</svg>';
+}
+function sceneHTML(season){return '<div class="sky k-'+season+'">'+scene(season)+'</div>'}
+/* ---------- season particles (one rAF loop for every live scene) ---------- */
+var Scenes=[],sRaf=0,sLast=0;
+var RATE={fall:6,winter:34,spring:7,summer:11};
+var BCOL={
+  fall:['#E4572E','#F4A53B','#B8691F','#FFD23F'],
+  winter:['#FFFFFF','#DCEBFF','#9CC9F5','#CFE3FA'],
+  spring:['#FF8FAB','#FFFFFF','#C4B2EE','#FFD54F','#8BD17C'],
+  summer:['#FFD23F','#FF8A3D','#FFFFFF','#4FC3D9']
+};
+var KIND={fall:'leaf',winter:'flake',spring:'petal',summer:'mote'};
+function Scene(cv,season){
+  this.cv=cv;this.c=cv.getContext('2d');this.s=season;this.p=[];this.acc=0;this.w=0;this.h=0;this.bf=0;
+  this.fit();Scenes.push(this);
+  if(!RM()){for(var i=0;i<(season==='winter'?26:7);i++)this.spawn(true)}
+  runScenes();
+}
+Scene.prototype.fit=function(){
+  var r=this.cv.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+  this.w=r.width;this.h=r.height;
+  this.cv.width=Math.max(1,Math.round(r.width*dpr));this.cv.height=Math.max(1,Math.round(r.height*dpr));
+  this.c.setTransform(dpr,0,0,dpr,0,0);
+};
+Scene.prototype.spawn=function(anywhere){
+  if(this.p.length>150) return;
+  var s=this.s,w=this.w,h=this.h,r=Math.random,col=BCOL[s];
+  var o={k:KIND[s],x:r()*(w+60)-30,y:anywhere?r()*h:-16,ph:r()*6.28,rot:r()*6.28,vr:(r()-.5)*2.4,age:0,life:1e9,col:col[(r()*col.length)|0],g:0,vx:0,vy:0};
+  if(s==='fall'){o.vy=26+r()*34;o.sz=7+r()*6;o.sw=26+r()*28}
+  else if(s==='winter'){o.vy=22+r()*44;o.sz=1.4+r()*3.2;o.sw=8+r()*14;o.vr=(r()-.5)*1.2}
+  else if(s==='spring'){o.vy=18+r()*26;o.sz=4+r()*3;o.sw=22+r()*24}
+  else{o.y=anywhere?r()*h:h*(.45+r()*.55);o.vy=-(8+r()*18);o.sz=1.6+r()*2.6;o.sw=10+r()*14;o.life=4+r()*5}
+  this.p.push(o);
+};
+Scene.prototype.burst=function(x,y,n){
+  if(RM()) return;
+  var col=BCOL[this.s],k=KIND[this.s];
+  for(var i=0;i<(n||16);i++){
+    var a=Math.random()*6.283,v=60+Math.random()*150;
+    this.p.push({k:k,x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-90,g:240,ph:Math.random()*6.28,rot:Math.random()*6.28,vr:(Math.random()-.5)*8,
+      age:0,life:1.2+Math.random()*.9,col:col[i%col.length],sz:k==='flake'?2.5+Math.random()*3:k==='mote'?2.4+Math.random()*2.4:k==='petal'?4.5+Math.random()*3:7+Math.random()*5,sw:0,burst:1});
+  }
+};
+Scene.prototype.setSeason=function(s){this.s=s;this.p.forEach(function(p){if(!p.burst&&p.life>100)p.life=p.age+1.2});};
+function drawP(c,p,t){
+  var a=p.life<1e8?Math.max(0,Math.min(1,Math.min((p.life-p.age)/.8,p.age/.5+.2))):1;
+  c.save();c.globalAlpha=a;c.translate(p.x,p.y);
+  if(p.k==='leaf'){
+    c.rotate(p.rot);c.fillStyle=p.col;c.beginPath();c.moveTo(0,-p.sz);c.quadraticCurveTo(p.sz*.9,-p.sz*.2,0,p.sz);c.quadraticCurveTo(-p.sz*.9,-p.sz*.2,0,-p.sz);c.fill();
+    c.strokeStyle='rgba(90,40,10,.45)';c.lineWidth=1;c.beginPath();c.moveTo(0,-p.sz*.8);c.lineTo(0,p.sz*1.15);c.stroke();
+  }else if(p.k==='flake'){
+    c.fillStyle='#fff';
+    if(p.sz>3.2){c.rotate(p.rot);c.strokeStyle='#fff';c.lineWidth=1.2;c.beginPath();for(var i=0;i<3;i++){c.moveTo(-p.sz,0);c.lineTo(p.sz,0);c.rotate(1.047)}c.stroke()}
+    else{c.beginPath();c.arc(0,0,p.sz,0,6.283);c.fill()}
+  }else if(p.k==='petal'){
+    c.rotate(p.rot);c.scale(1,.62+Math.abs(Math.sin(p.rot*.7))*.38);c.fillStyle=p.col;c.beginPath();c.ellipse(0,0,p.sz,p.sz*.62,0,0,6.283);c.fill();
+  }else if(p.k==='bfly'){
+    var f=Math.abs(Math.sin(t*9+p.ph));c.rotate(Math.sin(t*2+p.ph)*.25);
+    c.fillStyle=p.col;c.beginPath();c.ellipse(-5*f-1,-2,6*f+1,5,-.4,0,6.283);c.ellipse(5*f+1,-2,6*f+1,5,.4,0,6.283);c.fill();
+    c.fillStyle='rgba(255,255,255,.55)';c.beginPath();c.ellipse(-3*f-1,3,3.6*f+.6,3,.3,0,6.283);c.ellipse(3*f+1,3,3.6*f+.6,3,-.3,0,6.283);c.fill();
+    c.fillStyle='#3A2A4A';c.fillRect(-1,-5,2,10);
+  }else{
+    var tw=.55+.45*Math.sin(t*3+p.ph);c.globalAlpha=a*tw;
+    var g=c.createRadialGradient(0,0,0,0,0,p.sz*3);g.addColorStop(0,p.col);g.addColorStop(1,'rgba(255,210,63,0)');
+    c.fillStyle=g;c.beginPath();c.arc(0,0,p.sz*3,0,6.283);c.fill();
+    c.fillStyle='#fff';c.beginPath();c.arc(0,0,p.sz*.55,0,6.283);c.fill();
+  }
+  c.restore();
+}
+function stepScenes(now){
+  sRaf=0;
+  if(document.hidden){sLast=0;return}
+  var dt=sLast?Math.min(.05,(now-sLast)/1000):.016;sLast=now;var t=now/1000,live=0;
+  for(var i=Scenes.length-1;i>=0;i--){
+    var S=Scenes[i];
+    if(!document.contains(S.cv)){Scenes.splice(i,1);continue}
+    if(S.cv.offsetParent===null) continue;
+    live++;
+    var r=S.cv.getBoundingClientRect();
+    if(Math.abs(r.width-S.w)>1||Math.abs(r.height-S.h)>1) S.fit();
+    var c=S.c;c.clearRect(0,0,S.w,S.h);
+    if(!RM()){
+      S.acc+=dt*RATE[S.s];while(S.acc>=1){S.acc-=1;S.spawn(false)}
+      if(S.s==='spring'&&S.bf<2){S.bf++;S.p.push({k:'bfly',x:-20,y:S.h*(.25+Math.random()*.4),ph:Math.random()*6.28,rot:0,vr:0,age:0,life:1e9,col:['#FFB347','#7CC6F5','#FF8FAB'][(Math.random()*3)|0],sz:1,sw:0,vx:34+Math.random()*26,vy:0,g:0,bflyHome:1})}
+    }
+    for(var j=S.p.length-1;j>=0;j--){
+      var p=S.p[j];p.age+=dt;
+      if(p.k==='bfly'){
+        p.x+=p.vx*dt;p.y+=Math.sin(t*1.7+p.ph)*28*dt+Math.cos(t*.9+p.ph)*10*dt;
+        if(p.x>S.w+30){S.p.splice(j,1);S.bf=Math.max(0,S.bf-1);continue}
+      }else if(p.burst){
+        p.vx*=.992;p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;
+        if(p.age>p.life){S.p.splice(j,1);continue}
+      }else{
+        p.y+=p.vy*dt;p.x+=Math.sin(t*1.3+p.ph)*p.sw*dt;p.rot+=p.vr*dt;
+        if(p.age>p.life||p.y>S.h+20||p.y<-30){S.p.splice(j,1);continue}
+      }
+      drawP(c,p,t);
+    }
+  }
+  if(Scenes.length&&!document.hidden) sRaf=requestAnimationFrame(stepScenes);
+}
+function runScenes(){if(!sRaf&&!document.hidden){sLast=0;sRaf=requestAnimationFrame(stepScenes)}}
+document.addEventListener('visibilitychange',runScenes);
+
+/* ---------- Wick on stage: moods, eyes, reactions ---------- */
+var OWLS=[];
+function mountOwl(host,season,mood){
+  host.innerHTML=owlSVG(season,mood);
+  if(OWLS.indexOf(host)<0) OWLS.push(host);
+  return host.firstChild;
+}
+function setMood(host,m){var s=host.firstChild;if(s&&s.getAttribute('data-mood')!==m) s.setAttribute('data-mood',m)}
+function owlFx(host,name,ms){
+  var s=host.firstChild;if(!s||RM()&&name!=='cheer') return;
+  s.removeAttribute('data-fx');void s.getBoundingClientRect();s.setAttribute('data-fx',name);
+  clearTimeout(host._fx);host._fx=setTimeout(function(){s.removeAttribute('data-fx')},ms||1500);
+}
+function setLook(s,x,y){s.style.setProperty('--px',x.toFixed(1));s.style.setProperty('--py',y.toFixed(1))}
+var look={x:0,y:0,t:0},lookRaf=0;
+function doLook(){
+  lookRaf=0;OWLS=OWLS.filter(function(h){return document.contains(h)});
+  OWLS.forEach(function(h){
+    var s=h.firstChild;if(!s||h.offsetParent===null) return;
+    var r=h.getBoundingClientRect(),dx=look.x-(r.left+r.width/2),dy=look.y-(r.top+r.height*.38),d=Math.hypot(dx,dy)||1,k=Math.min(1,d/150);
+    setLook(s,dx/d*7*k,dy/d*5*k);
+  });
+}
+function onPoint(e){look.x=e.clientX;look.y=e.clientY;look.t=Date.now();if(!lookRaf)lookRaf=requestAnimationFrame(doLook)}
+document.addEventListener('pointermove',onPoint,{passive:true});
+document.addEventListener('pointerdown',onPoint,{passive:true});
+setInterval(function(){
+  if(Date.now()-look.t<4500||document.hidden) return;
+  OWLS.forEach(function(h){var s=h.firstChild;if(s&&h.offsetParent!==null)setLook(s,(Math.random()-.5)*12,(Math.random()-.4)*7)});
+},3200);
+function hoot(){
+  if(!state.sound) return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended') ac.resume();
+    [[392,0],[311,.2]].forEach(function(n){
+      var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+n[1];
+      o.type='sine';o.frequency.setValueAtTime(n[0]*1.12,t);o.frequency.exponentialRampToValueAtTime(n[0],t+.12);
+      g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+.4);
+      o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.45);
+    });
+  }catch(e){}
+}
+
+/* ---------- seasons ---------- */
+var SN={fall:{n:'Fall',m:'Sep to Nov'},winter:{n:'Winter',m:'Dec to Feb'},spring:{n:'Spring',m:'Mar to May'},summer:{n:'Summer',m:'Jun to Aug'}};
+function calSeason(){var m=new Date().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'fall':'winter'}
+function curSeasonName(){return calSeason()}
+var LINES={
+  fall:['Crunchy leaves everywhere.','Cosy sweater weather.','I found the biggest leaf.','Pumpkin season, hoot hoot.'],
+  winter:['Brr. Warm hat on.','Look, it is snowing.','Hot cocoa weather.','My scarf is very long.'],
+  spring:['Flowers everywhere.','Did you see that butterfly?','Everything is waking up.','I made a flower crown.'],
+  summer:['Sunny day, shades on.','Beach owl mode.','Too bright. Worth it.','Ice cream weather.']
+};
+var stageEl=$('#stage'),stScene=null,stSeason=null,lastDone=-1,bubT=0,lastMood='';
+function say(txt,ms){
+  var b=$('#bubble');b.classList.remove('pop');void b.offsetWidth;
+  b.firstElementChild.textContent=txt;b.classList.add('pop');
+  clearTimeout(bubT);if(ms)bubT=setTimeout(function(){bubT=0;paintBubble()},ms);
+}
+function paintBubble(){
+  var total=state.streaks.length,done=0;state.streaks.forEach(function(s){if(status(s)==='done')done++});
+  var txt=!total?'Let’s make your first streak.':done===0?'Zzz… tap +1 to wake me up.':done===total?'All collected. See you tomorrow.':(total-done)+' to go. You’ve got this.';
+  var b=$('#bubble');b.firstElementChild.textContent=txt;
+}
+function moodNow(){
+  var total=state.streaks.length,done=0;state.streaks.forEach(function(s){if(status(s)==='done')done++});
+  return !total?'awake':done===0?'sleepy':done===total?'happy':'awake';
+}
+function placeScene(box,season,wipe,ox,oy){
+  var n=document.createElement('div');n.className='scene';n.innerHTML=sceneHTML(season);
+  if(wipe&&!RM()){n.style.setProperty('--ox',ox);n.style.setProperty('--oy',oy);n.classList.add('wipe')}
+  box.appendChild(n);
+  var kids=box.children;
+  setTimeout(function(){while(box.children.length>1&&box.firstChild!==n)box.removeChild(box.firstChild)},wipe&&!RM()?1100:30);
+}
+function applySeason(s,animate){
+  var host=$('#owlMain'),box=$('#scBox');
+  stageEl.setAttribute('data-season',s);
+  placeScene(box,s,animate,'24%','70%');
+  if(!stScene) stScene=new Scene($('#stCv'),s); else stScene.setSeason(s),stScene.s=s;
+  if(animate&&!RM()){
+    host.classList.remove('in');host.classList.add('out');
+    setTimeout(function(){
+      mountOwl(host,s,moodNow());host.classList.remove('out');void host.offsetWidth;host.classList.add('in');
+      var r=host.getBoundingClientRect(),sr=$('#stCv').getBoundingClientRect();
+      stScene.burst(r.left-sr.left+r.width/2,r.top-sr.top+r.height*.5,30);
+      owlFx(host,'cheer',1600);
+      setTimeout(function(){host.classList.remove('in')},900);
+    },230);
+  }else{mountOwl(host,s,moodNow())}
+  stSeason=s;paintAllOwls();
+}
+function paintStage(){
+  if(!stageEl) return;
+  var s=curSeasonName(),host=$('#owlMain'),first=!stSeason;
+  if(s!==stSeason) applySeason(s,!first);
+  var total=state.streaks.length,done=0;state.streaks.forEach(function(x){if(status(x)==='done')done++});
+  var m=moodNow();
+  if(m!==lastMood){setMood(host,m);lastMood=m}
+  if(lastDone>=0&&done>lastDone){owlFx(host,'cheer',1500);hoot()}
+  if(lastDone<0&&first) host.classList.add('in');
+  lastDone=done;
+  if(!bubT) paintBubble();
+  $('#sname').textContent=SN[s].n;
+}
+function paintAllOwls(){
+  /* welcome / empty / celebration owls follow the current season */
+  var s=curSeasonName();
+  [['#wOwl1','happy'],['#wOwl2','happy'],['#emptyOwl','sleepy'],['#celeOwl','happy']].forEach(function(a){var h=$(a[0]);if(h)mountOwl(h,s,a[1])});
+}
+function tapOwl(){
+  var host=$('#owlMain'),s=curSeasonName();
+  owlFx(host,'cheer',1500);hoot();buzz(10);
+  var r=host.getBoundingClientRect(),sr=$('#stCv').getBoundingClientRect();
+  if(stScene) stScene.burst(r.left-sr.left+r.width/2,r.top-sr.top+r.height*.4,18);
+  var L=LINES[s];say(L[(Math.random()*L.length)|0],3400);
+}
+
+/* ---------- all-seasons gallery ---------- */
+var gsheet=$('#gsheet'),gScenes=[],gTimers=[];
+function buildGallery(){
+  var box=$('#gtiles');box.innerHTML='';gScenes=[];
+  ['fall','winter','spring','summer'].forEach(function(s,i){
+    var b=document.createElement('button');b.type='button';b.className='gtile';b.dataset.s=s;
+    b.innerHTML='<div class="gscene">'+sceneHTML(s)+'</div><canvas class="pc" aria-hidden="true"></canvas><div class="gowl"></div><span class="gname">'+SN[s].n+'<small>'+SN[s].m+'</small></span>';
+    b.setAttribute('aria-label',SN[s].n+', '+SN[s].m+'. Tap to see Wick cheer.');
+    box.appendChild(b);
+    mountOwl($('.gowl',b),s,'awake');
+    b.style.setProperty('--d',i*90+'ms');
+  });
+}
+function paintGallery(){
+  var now=calSeason();$('#gNow').textContent=SN[now].n;
+  $('#gtiles').querySelectorAll('.gtile').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.s===now?'true':'false')});
+}
+function openGallery(from){
+  if(activeSheet) return;
+  buildGallery();paintGallery();showSheet(gsheet,from);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    $('#gtiles').querySelectorAll('.gtile').forEach(function(b,i){
+      var sc=new Scene($('.pc',b),b.dataset.s);gScenes[i]=sc;
+      var host=$('.gowl',b);
+      gTimers.push(setTimeout(function(){owlFx(host,'cheer',1500);var r=host.getBoundingClientRect(),cr=$('.pc',b).getBoundingClientRect();sc.burst(r.left-cr.left+r.width/2,r.top-cr.top+r.height*.5,16)},500+i*420));
+      gTimers.push(setInterval(function(){if(document.contains(host))owlFx(host,'cheer',1500)},6500+i*900));
+    });
+  })});
+  try{localStorage.setItem('easy-streaks-owl-seen','1')}catch(e){}
+}
+function cleanupGallery(){gTimers.forEach(function(t){clearTimeout(t);clearInterval(t)});gTimers=[];gScenes=[]}
+function maybeGallery(){
+  try{if(localStorage.getItem('easy-streaks-owl-seen'))return}catch(e){return}
+  if(activeSheet||!welcome.hidden||!cele.hidden) return;
+  openGallery($('#gal'));
+}
+
 /* ---------- celebration overlay ---------- */
 var cele=$('#cele'),celeOpener=null;
 function showCele(s,n){
@@ -900,6 +1493,7 @@ function showCele(s,n){
   ok.style.animation='none';void ok.offsetWidth;ok.style.animation='';
   celeOpener=document.activeElement;
   rain(FIRE);
+  mountOwl($('#celeOwl'),curSeasonName(),'happy');owlFx($('#celeOwl'),'cheer',2800);setTimeout(hoot,500);
   setTimeout(function(){ok.focus({preventScroll:true})},900);
 }
 function closeCele(){
@@ -935,7 +1529,7 @@ function showSheet(el,from){
 }
 function closeSheet(){
   var el=activeSheet;if(!el) return;
-  activeSheet=null;clearTimeout(armT);armed=false;
+  activeSheet=null;clearTimeout(armT);armed=false;if(el===gsheet)cleanupGallery();
   scrim.hidden=true;syncLock();
   var fin=function(){el.hidden=true;el.classList.remove('out')};
   if(RM()){fin()}else{el.classList.add('out');setTimeout(fin,210)}
@@ -1057,6 +1651,7 @@ var welcome=$('#welcome'),wColor=5,wFrom=false;
 function wStep(n){
   $('#wStep1').hidden=n!==1;$('#wStep2').hidden=n!==2;
   $('#wErr').hidden=true;
+  var wh=$(n===1?'#wOwl1':'#wOwl2');if(wh)setTimeout(function(){owlFx(wh,'cheer',1500)},650);
   setTimeout(function(){
     var t=n===1?$('#wCreate'):$('#wName');
     try{t.focus({preventScroll:true})}catch(e){}
@@ -1066,7 +1661,7 @@ function showWelcome(step,fromProfile){
   wFrom=!!fromProfile;$('#wClose').hidden=!wFrom;
   welcome.hidden=false;syncLock();wStep(step||1);
 }
-function closeWelcome(){welcome.hidden=true;syncLock()}
+function closeWelcome(){welcome.hidden=true;syncLock();setTimeout(maybeGallery,900)}
 function paintWColor(){
   var p=PAL[wColor];
   markSwatches($('#wSw'),wColor);
@@ -1153,6 +1748,16 @@ $('#wClose').addEventListener('click',closeWelcome);
 $('#wName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();wGo()}});
 $('#wGo').addEventListener('click',wGo);
 $('#celeOk').addEventListener('click',closeCele);
+$('#owlMain').addEventListener('click',tapOwl);
+$('#owlMain').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tapOwl()}});
+$('#gal').addEventListener('click',function(e){openGallery(e.currentTarget)});
+$('#gClose').addEventListener('click',closeSheet);
+$('#gtiles').addEventListener('click',function(e){
+  var b=e.target.closest('.gtile');if(!b) return;
+  var host=$('.gowl',b);owlFx(host,'cheer',1500);hoot();buzz(10);
+  var sc=gScenes[[].indexOf.call($('#gtiles').children,b)],r=host.getBoundingClientRect(),cr=$('.pc',b).getBoundingClientRect();
+  if(sc) sc.burst(r.left-cr.left+r.width/2,r.top-cr.top+r.height*.5,18);
+});
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     if(!cele.hidden){closeCele();return}
@@ -1189,6 +1794,7 @@ document.addEventListener('visibilitychange',function(){
 calcWeek();
 sig=today+':'+(new Date().getHours()>=18);
 buildStreakPickers();
+paintAllOwls();
 buildSwatches($('#pSw'),function(i){pdraft.color=i;paintProfile()});
 buildSwatches($('#wSw'),function(i){wColor=i;paintWColor()});
 paintWColor();
@@ -1198,13 +1804,12 @@ paintMe();
 if(STANDALONE){
   $('#pCreate').hidden=true;
   $('#pGuest .ptext').textContent='Your streaks are saved on this device, in this app. Clearing the browser\u2019s site data would erase them.';
-  $('#pSub').textContent='Saved on this device';
   if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){navigator.serviceWorker.register('sw.js').catch(function(){})}
 }
 if(acct!=='guest') ensureCloud();
 if(acct===null) showWelcome(1,false);
+else setTimeout(maybeGallery,1500);
 })();
 </script>
-
 </body>
 </html>
