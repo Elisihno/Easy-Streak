@@ -661,10 +661,19 @@ var RM=function(){return mqRM.matches};
 /* ---------- dates (local calendar days) ---------- */
 function pad(n){return (n<10?'0':'')+n}
 function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+var TZ='Europe/Stockholm',_tf=null;
+function se(){
+  try{
+    _tf=_tf||new Intl.DateTimeFormat('en-GB',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hourCycle:'h23'});
+    var o={};_tf.formatToParts(new Date()).forEach(function(p){o[p.type]=p.value});
+    return {y:+o.year,m:+o.month,d:+o.day,h:(+o.hour)%24};
+  }catch(e){var n=new Date();return {y:n.getFullYear(),m:n.getMonth()+1,d:n.getDate(),h:n.getHours()}}
+}
+function nowKey(){var t=se();return t.y+'-'+pad(t.m)+'-'+pad(t.d)}
 function parts(k){var a=k.split('-');return [+a[0],+a[1],+a[2]]}
 function dayNum(k){var p=parts(k);return Math.round(Date.UTC(p[0],p[1]-1,p[2])/864e5)}
 function shift(k,n){var p=parts(k);return key(new Date(p[0],p[1]-1,p[2]+n))}
-var today=key(new Date());
+var today=nowKey();
 var weekDays=[];
 function calcWeek(){
   weekDays=[];
@@ -873,7 +882,7 @@ function setNum(el,n,animate){
   setTimeout(function(){if(cur.parentNode)cur.remove();nu.className=''},460);
 }
 function statusInfo(s,st){
-  var evening=new Date().getHours()>=18;
+  var evening=se().h>=18;
   if(st==='done') return ['Collected today','ok'];
   if(st==='fresh') return ['Ready to start',''];
   if(st==='lost') return ['Lost at '+s.count+(s.count===1?' day':' days')+'. Start over.','warn'];
@@ -980,7 +989,7 @@ function paintHero(){
   lastLit=lit;
   paintStage();
 }
-function greeting(){var h=new Date().getHours();return h<5?'Late night':h<12?'Good morning':h<18?'Good afternoon':'Good evening'}
+function greeting(){var h=se().h;return h<5?'Late night':h<12?'Good morning':h<18?'Good afternoon':'Good evening'}
 function paintAvatar(el){
   if(acct==='account'&&state.profile){
     var p=PAL[state.profile.color];
@@ -994,7 +1003,7 @@ function paintAvatar(el){
 function paintMe(){
   paintAvatar($('#avatar'));
   $('#hello').textContent=greeting()+(acct==='account'&&state.profile?', '+state.profile.name:'');
-  $('#dateLine').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+(acct==='guest'?' · Guest':'');
+  $('#dateLine').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',timeZone:TZ})+(acct==='guest'?' · Guest':'');
 }
 function paintSound(){
   var b=$('#snd');
@@ -1372,7 +1381,7 @@ function hoot(){
 
 /* ---------- seasons ---------- */
 var SN={fall:{n:'Fall',m:'Sep to Nov'},winter:{n:'Winter',m:'Dec to Feb'},spring:{n:'Spring',m:'Mar to May'},summer:{n:'Summer',m:'Jun to Aug'}};
-function calSeason(){var m=new Date().getMonth();return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'fall':'winter'}
+function calSeason(){var m=se().m-1;return m>=2&&m<=4?'spring':m>=5&&m<=7?'summer':m>=8&&m<=10?'fall':'winter'}
 function curSeasonName(){return calSeason()}
 var LINES={
   fall:['Crunchy leaves everywhere.','Cosy sweater weather.','I found the biggest leaf.','Pumpkin season, hoot hoot.'],
@@ -1778,7 +1787,7 @@ document.addEventListener('keydown',function(e){
 /* ---------- day rollover ---------- */
 var sig='';
 function tick(){
-  var d=new Date(),k=key(d),s2=k+':'+(d.getHours()>=18);
+  var k=nowKey(),s2=k+':'+(se().h>=18);
   if(s2===sig) return;
   var changed=k!==today;sig=s2;
   if(changed){today=k;calcWeek()}
@@ -1792,7 +1801,7 @@ document.addEventListener('visibilitychange',function(){
 
 /* ---------- go ---------- */
 calcWeek();
-sig=today+':'+(new Date().getHours()>=18);
+sig=today+':'+(se().h>=18);
 buildStreakPickers();
 paintAllOwls();
 buildSwatches($('#pSw'),function(i){pdraft.color=i;paintProfile()});
